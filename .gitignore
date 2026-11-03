@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+data/
+*.pyc
+preview.png
+preview-en.png
+.test-tmp/
