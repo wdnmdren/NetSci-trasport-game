@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QHBoxLayout, 
 from core import Game, Recorder, SHAPES
 from i18n import translate
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(sys.executable).resolve().parent if getattr(sys, 'frozen', False) else Path(__file__).resolve().parent
 DATA = ROOT / 'data'
 COLORS = dict(zip(SHAPES, ['#42c9be', '#f4bc65', '#79a6f6', '#e399da', '#b4a1ff']))
 NAMES = dict(zip(SHAPES, ['圆形', '三角', '方形', '星形', '菱形']))
@@ -284,12 +284,12 @@ class Window(QMainWindow):
         self.timer.start(16)
         self.apply_language()
 
-    def tr_text(self, source, **values):
-        return translate(self.language,source,**values)
+    def tr_text(self, template, **values):
+        return translate(self.language,template,**values)
 
-    def set_hint(self, source, **values):
-        self.hint_source, self.hint_values = source, values
-        self.hint.setText(self.tr_text(source,**values))
+    def set_hint(self, template, **values):
+        self.hint_source, self.hint_values = template, values
+        self.hint.setText(self.tr_text(template,**values))
 
     def set_language(self, language):
         self.language = language
@@ -345,7 +345,7 @@ class Window(QMainWindow):
                 if count:
                     text += f"  {self.tr_text(NAMES[shape])}: {count}\n"
             text += '\n'
-        text += self.tr_text('规则\n每边每 tick 运送 1 件\n平行边增加带宽\n每 25 tick 新增节点\n边容量 = 当前节点数\n＋每新增 3 节点奖励 1 边\n队列 >12 连续 12 tick 失败\n\n节点下方图形表示货物目标\n数字表示该类等待数量\n\n每 20 tick 自动存档\n所有事件记录到 SQLite')
+        text += self.tr_text('规则\n每边每 tick 运送 1 件\n平行边增加带宽\n每 25 tick 新增节点\n边容量 = 节点数\n＋floor(节点数 / 3)\n队列 >12 连续 12 tick 失败\n\n节点下方图形表示货物目标\n数字表示该类等待数量\n\n每 20 tick 自动存档\n所有事件记录到 SQLite')
         self.details.setText(text)
         self.map.update()
 

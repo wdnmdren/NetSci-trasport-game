@@ -5,3 +5,8 @@ data/
 preview.png
 preview-en.png
 .test-tmp/
+runs/
+release/
+release-stable/
+*.zip
+events.csv

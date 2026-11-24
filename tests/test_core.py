@@ -26,11 +26,11 @@ class SimulationTests(unittest.TestCase):
 
     def test_capacity_growth_and_build_limit(self):
         g = Game()
-        self.assertEqual(g.capacity, 5)
-        for _ in range(5):
+        self.assertEqual(g.capacity, 6)
+        for _ in range(6):
             self.assertTrue(g.build(0,1))
         self.assertFalse(g.build(0,1))
-        for expected in [6,7,9,10,11,13]:
+        for expected in [8,9,10,12,13,14]:
             g.add_node('circle', (100,100))
             self.assertEqual(g.capacity, expected)
         self.assertTrue(g.build(0,1))
@@ -49,6 +49,17 @@ class SimulationTests(unittest.TestCase):
                 a.step()
                 b.step()
                 self.assertEqual(a.snapshot(),b.snapshot())
+
+    def test_new_edge_invalidates_cached_routes(self):
+        game = Game(42)
+        game.state['cargo']['tracked'] = dict(id='tracked', origin=0, target='square', reward=2,
+            created=0, arrived=0, location=0, delivered=None)
+        game.state['nodes'][0]['queue'].append('tracked')
+        game.step()
+        self.assertIsNone(game.state['cargo']['tracked']['delivered'])
+        game.build(0, 2)
+        game.step()
+        self.assertEqual(game.state['cargo']['tracked']['delivered'], 2)
 
     def test_one_hop_and_parallel_capacity(self):
         g = Game()

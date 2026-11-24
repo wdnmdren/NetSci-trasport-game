@@ -19,6 +19,8 @@ class Game:
                           threshold=12, overload_duration=12, initial_nodes=5)
         self.events = []
         self.moves = []
+        self._routing_signature = None
+        self._routing_cache = None
         for shape, pos in zip(SHAPES[:3] + ['circle', 'triangle'],
                               [(180, 180), (480, 130), (730, 300), (550, 540), (220, 500)]):
             self.add_node(shape, pos)
@@ -28,8 +30,8 @@ class Game:
 
     @property
     def capacity(self):
-        s = self.state
-        return len(s['nodes']) + (len(s['nodes']) - s['initial_nodes']) // 3
+        node_count = len(self.state['nodes'])
+        return node_count + node_count // 3
 
     def add_node(self, shape=None, pos=None):
         if shape is None:
@@ -74,16 +76,22 @@ class Game:
             s['cargo'][cid] = cargo
             origin['queue'].append(cid)
             self.event('cargo_created', cargo=dict(cargo))
-        graph = nx.DiGraph()
-        graph.add_nodes_from(n['id'] for n in nodes)
-        graph.add_edges_from((e['source'], e['target']) for e in s['edges'])
-        routes = {}
-        for node in nodes:
-            paths = nx.single_source_shortest_path(graph, node['id'])
-            for shape in SHAPES:
-                candidates = [p for dest, p in paths.items() if nodes[dest]['shape'] == shape and len(p) > 1]
-                if candidates:
-                    routes[node['id'], shape] = min(candidates, key=lambda p: (len(p), p))[1]
+        signature = (tuple((node['id'], node['shape']) for node in nodes),
+                     tuple((edge['source'], edge['target']) for edge in s['edges']))
+        if signature != self._routing_signature:
+            graph = nx.DiGraph()
+            graph.add_nodes_from(n['id'] for n in nodes)
+            graph.add_edges_from((e['source'], e['target']) for e in s['edges'])
+            routes = {}
+            for node in nodes:
+                paths = nx.single_source_shortest_path(graph, node['id'])
+                for shape in SHAPES:
+                    candidates = [p for dest, p in paths.items() if nodes[dest]['shape'] == shape and len(p) > 1]
+                    if candidates:
+                        routes[node['id'], shape] = min(candidates, key=lambda p: (len(p), p))[1]
+            self._routing_cache = routes
+            self._routing_signature = signature
+        routes = self._routing_cache
         available = {}
         for edge in s['edges']:
             available.setdefault((edge['source'], edge['target']), []).append(edge['id'])

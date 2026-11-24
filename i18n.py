@@ -26,8 +26,8 @@ EN = {
     '运行概况\n\n节点：{nodes}\n已生成货物：{cargo}\n已交付：{delivered}\n等待：{waiting}\n平均交付延迟：{delay:.1f} tick\n随机种子：{seed}\n\n':
         'Overview\n\nNodes: {nodes}\nCargo generated: {cargo}\nDelivered: {delivered}\nWaiting: {waiting}\nMean delivery delay: {delay:.1f} ticks\nRandom seed: {seed}\n\n',
     '节点 #{id} · {shape}\n': 'Node #{id} · {shape}\n',
-    '规则\n每边每 tick 运送 1 件\n平行边增加带宽\n每 25 tick 新增节点\n边容量 = 当前节点数\n＋每新增 3 节点奖励 1 边\n队列 >12 连续 12 tick 失败\n\n节点下方图形表示货物目标\n数字表示该类等待数量\n\n每 20 tick 自动存档\n所有事件记录到 SQLite':
-        'Rules\n1 cargo per edge per tick\nParallel edges add bandwidth\nA new node every 25 ticks\nEdge capacity = node count\n+1 per 3 additional nodes\nQueue >12 for 12 ticks: game over\n\nSymbols below nodes show cargo targets; numbers show waiting counts.\n\nAutosave every 20 ticks\nAll events recorded in SQLite',
+    '规则\n每边每 tick 运送 1 件\n平行边增加带宽\n每 25 tick 新增节点\n边容量 = 节点数\n＋floor(节点数 / 3)\n队列 >12 连续 12 tick 失败\n\n节点下方图形表示货物目标\n数字表示该类等待数量\n\n每 20 tick 自动存档\n所有事件记录到 SQLite':
+        'Rules\n1 cargo per edge per tick\nParallel edges add bandwidth\nA new node every 25 ticks\nEdge capacity = node count\n+ floor(node count / 3)\nQueue >12 for 12 ticks: game over\n\nSymbols below nodes show cargo targets; numbers show waiting counts.\n\nAutosave every 20 ticks\nAll events recorded in SQLite',
     '游戏结束：节点持续过载。可保存、导出数据或新建游戏。':
         'Game over: sustained node overload. You can save, export data or start a new game.',
     '已重新排版节点与连线。滚轮缩放，中键拖动画面，双击适应全图。':
@@ -45,5 +45,5 @@ EN = {
 }
 
 
-def translate(language, source, **values):
-    return (EN.get(source, source) if language == 'en' else source).format(**values)
+def translate(language, template, **values):
+    return (EN.get(template, template) if language == 'en' else template).format(**values)
