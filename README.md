@@ -6,7 +6,11 @@
 
 一个有向网络建设与货物运输游戏，支持运输动画、中文/英文界面、存档和完整事件记录。
 
-### 启动（Windows，Python 3.10+）
+### 启动（Windows）
+
+**免安装运行：** 在 [Releases](https://github.com/wdnmdren/NetSci-trasport-game/releases/latest) 下载 Windows x64 压缩包，完整解压后双击 `NetSciTransport.exe`，无需安装 Python。请保留旁边的 `_internal` 文件夹，不要直接在压缩包预览窗口里运行。
+
+**从源码运行（Python 3.10+）：**
 
 在项目目录运行：
 
@@ -77,7 +81,11 @@ py -m venv --upgrade .venv
 
 A directed-network construction and cargo transport game with animated deliveries, Chinese/English UI, save files, and full event logging.
 
-### Getting started (Windows, Python 3.10+)
+### Getting started (Windows)
+
+**Portable build:** Download the Windows x64 ZIP from [Releases](https://github.com/wdnmdren/NetSci-trasport-game/releases/latest), extract it completely, and double-click `NetSciTransport.exe`. Python is not required. Keep the `_internal` folder beside the executable; do not run the game from a ZIP preview window.
+
+**Run from source (Python 3.10+):**
 
 Run these commands from the project directory:
 
